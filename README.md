@@ -13,6 +13,24 @@ The long-term commercial direction may be open-core:
 
 Do not prematurely build the SaaS platform.
 
+The first Archaeologist CLI is implemented: prepare bounded repository evidence, reason in an existing Codex session or an optional BYOK model, import validated candidate findings, and review them. The Decision Compiler, Planner, HTTP/MCP interfaces, and platform remain future work.
+
+## Try it
+
+```sh
+uv venv .venv
+uv pip install --python .venv/bin/python -e .
+.venv/bin/lore archaeologist prepare /path/to/repo \
+  --include 'src/**/*.ts' \
+  --question 'What dependency boundaries and counterexamples appear here?'
+```
+
+Then use the generated `request.md` in Codex, import the JSON response, and review the findings. **No API key is required for this workflow.** Follow the [complete quickstart](docs/quickstart.md) for these steps, Python and other language support, limits, and optional BYOK usage.
+
+[Lore's knowledge](.lore/knowledge/vision.md) captures its [architecture](.lore/knowledge/architecture.md), [principles](.lore/knowledge/principles.md), [implementation decisions](.lore/knowledge/bootstrap-decisions.md), and [experiments](.lore/knowledge/experiments.md).
+
+The remainder is the recovered project brief. Its broad architecture and command examples describe the research direction, not the implemented command reference. See the [source note](docs/bootstrap-sources.md) for reconstruction details and [first self-analysis](docs/experiments/001-self-archaeology.md) for the bootstrap trial.
+
 ---
 
 # 1. Thesis
@@ -38,7 +56,7 @@ Today, most of this knowledge is stored indirectly.
 
 It exists in:
 
-```text id="f8fwdw"
+```text
 source code
 tests
 Git history
@@ -62,7 +80,7 @@ Lore explores:
 
 Conceptually:
 
-```text id="74z1i5"
+```text
 Human/team reasoning
         ↓
 Software Knowledge
@@ -88,7 +106,7 @@ The research question is whether increasingly large portions of implementation c
 
 Traditional development:
 
-```text id="gssu7j"
+```text
 human reasoning
       ↓
  source code          ← durable human artifact
@@ -100,7 +118,7 @@ machine code          ← derived artifact
 
 Possible AI-native development:
 
-```text id="x6cpcy"
+```text
 human/team reasoning
         ↓
 software knowledge    ← durable human/team artifact
@@ -136,7 +154,7 @@ If yes, it is a candidate for the software knowledge layer.
 
 Examples:
 
-```text id="f9e3ne"
+```text
 "Settled invoices cannot be edited."
 
 "Domain code cannot import infrastructure."
@@ -165,7 +183,7 @@ The system should optimize for **knowledge accumulation**, not code generation.
 
 Every development cycle potentially teaches the organization something:
 
-```text id="7xxoal"
+```text
 build
   ↓
 observe
@@ -184,7 +202,7 @@ Current AI coding workflows frequently lose this information.
 
 For example:
 
-```text id="rzjzm8"
+```text
 Agent implements feature
         ↓
 Human:
@@ -203,7 +221,7 @@ The software organization's knowledge did not.
 
 Lore should eventually recognize the candidate durable knowledge:
 
-```text id="0a5lxj"
+```text
 Recoverable application errors use ErrorBanner.
 ```
 
@@ -233,7 +251,7 @@ However, micro-decisions discovered during implementation were generally handled
 
 This distinction is important:
 
-```text id="4ihvqy"
+```text
 explicit feature/defect knowledge
         ↓
 persisted
@@ -264,13 +282,13 @@ Optimize around:
 
 The knowledge belongs to:
 
-```text id="kql8bj"
+```text
 project / team / organization
 ```
 
 not:
 
-```text id="slwnhv"
+```text
 developer / session / agent
 ```
 
@@ -278,7 +296,7 @@ Agents are clients of the knowledge system.
 
 Long term:
 
-```text id="7nq0vl"
+```text
              SOFTWARE KNOWLEDGE
                      │
        ┌─────────────┼─────────────┐
@@ -318,7 +336,7 @@ The system must eventually support:
 
 Example:
 
-```text id="65fp6x"
+```text
 Developer A + Agent A ──┐
                         │
 Developer B + Agent B ──┼──► SOFTWARE KNOWLEDGE
@@ -346,7 +364,7 @@ Do not assume Git must remain the final storage architecture.
 
 Potential sources:
 
-```text id="ofq3w1"
+```text
 code
 Git
 PRs
@@ -364,7 +382,7 @@ documentation
 
 All feed an ingestion layer:
 
-```text id="x4f2t5"
+```text
                  SOURCES
 
        code / Git / PRs / Jira / docs
@@ -424,13 +442,13 @@ These should eventually compose through the same knowledge core.
 
 Input:
 
-```text id="cuy2g9"
+```text
 existing repository
 ```
 
 Output:
 
-```text id="s4yr90"
+```text
 inferred software knowledge
 +
 evidence
@@ -456,7 +474,7 @@ that are implicit in implementation.
 
 Example:
 
-```text id="cm8b1j"
+```text
 ARCHITECTURE
 
 A-17 [high confidence]
@@ -474,7 +492,7 @@ Possible violation:
 
 Another:
 
-```text id="qqs7da"
+```text
 EXPERIENCE
 
 UX-12 [high confidence]
@@ -495,7 +513,7 @@ Frequency does not automatically imply intent.
 
 This:
 
-```text id="n7mhy7"
+```text
 OBSERVATION
 
 47/51 forms use ErrorBanner.
@@ -503,7 +521,7 @@ OBSERVATION
 
 does not automatically imply:
 
-```text id="7vb5x8"
+```text
 DECISION
 
 All forms must use ErrorBanner.
@@ -519,7 +537,7 @@ Do not make the LLM blindly explore repositories if deterministic tooling can co
 
 Prefer:
 
-```text id="krbhcm"
+```text
                  Repository
                      │
           ┌──────────┼───────────┐
@@ -583,7 +601,7 @@ Initial implementations may accept plain text/session/change input.
 
 Example:
 
-```text id="j2nkv4"
+```text
 Human:
 
 No, don't show a modal here.
@@ -592,7 +610,7 @@ Use ErrorBanner like the other settings forms.
 
 Candidate output:
 
-```text id="ifppgv"
+```text
 CANDIDATE KNOWLEDGE
 
 Statement:
@@ -613,7 +631,7 @@ Candidate
 
 The Decision Compiler eventually performs:
 
-```text id="z5lt88"
+```text
 extract
    ↓
 compare with existing knowledge
@@ -646,7 +664,7 @@ not:
 
 Input:
 
-```text id="bop9r7"
+```text
 task
 +
 software knowledge
@@ -656,13 +674,13 @@ repository evidence
 
 Example:
 
-```text id="0b12yd"
+```text
 Add bulk account deletion.
 ```
 
 Potential output:
 
-```text id="5eyz2r"
+```text
 RELEVANT KNOWLEDGE
 
 K-18
@@ -712,7 +730,7 @@ Never solve the knowledge problem by dumping the entire knowledge base into an L
 
 Resolve applicable knowledge.
 
-```text id="3ak35n"
+```text
 Task
  ↓
 Knowledge Resolver
@@ -728,7 +746,7 @@ Agent context
 
 Potential future scope hierarchy:
 
-```text id="3wm77r"
+```text
 organization
     ↓
 project
@@ -750,7 +768,7 @@ This resembles a cascade of engineering knowledge.
 
 Tentative:
 
-```text id="x57s05"
+```text
 OBSERVE
    ↓
 EXTRACT
@@ -771,7 +789,7 @@ OBSERVE
 
 Potential states:
 
-```text id="d29qsi"
+```text
 observation
 candidate
 accepted
@@ -790,7 +808,7 @@ Do not lock this schema prematurely.
 
 Potential knowledge primitives include:
 
-```text id="2e6o5r"
+```text
 DECISION
 "We use Postgres."
 
@@ -837,7 +855,7 @@ Knowledge should be traceable to evidence.
 
 Example:
 
-```text id="f6fdp3"
+```text
 K-291
 
 Statement:
@@ -886,7 +904,7 @@ AI models provide reasoning.
 
 Initial model architecture:
 
-```text id="cs5gh1"
+```text
                    Lore
                     │
               AI Runtime
@@ -907,7 +925,7 @@ Recommended v0:
 
 Example:
 
-```bash id="05cbr1"
+```bash
 export OPENAI_API_KEY=...
 
 lore archaeologist .
@@ -915,7 +933,7 @@ lore archaeologist .
 
 Potential later interface:
 
-```bash id="5mqvdh"
+```bash
 lore archaeologist . \
   --provider openai \
   --model <model>
@@ -925,7 +943,7 @@ Do not over-engineer provider abstraction prematurely.
 
 A minimal internal interface is enough:
 
-```python id="yn2h18"
+```python
 class Model:
     async def generate(
         self,
@@ -946,7 +964,7 @@ Protect this architectural principle:
 
 Long-term:
 
-```text id="54h91j"
+```text
 Claude Code ─┐
 Codex ───────┼──► Lore
 Cursor ──────┘
@@ -954,7 +972,7 @@ Cursor ──────┘
 
 Potential integration:
 
-```text id="amvk4j"
+```text
 MCP / API
 ```
 
@@ -974,7 +992,7 @@ Start with a **local CLI**.
 
 Example:
 
-```bash id="wbxvkg"
+```bash
 lore init
 lore archaeologist .
 lore ask "Why do we use Redis here?"
@@ -987,7 +1005,7 @@ Do NOT embed core logic in CLI handlers.
 
 Architecture:
 
-```text id="l3p7eq"
+```text
                 lore-core
                     │
              application API
@@ -1018,10 +1036,247 @@ Advantages:
 
 Possible enterprise topology:
 
-```text id="8t07m8"
+```text
 company repository
         ↓
 local Lore
         ↓
 company-approved LLM endpoint
-``
+```
+
+---
+
+# 22. Initial monorepo
+
+Suggested starting structure:
+
+```text
+lore/
+├── README.md
+├── docs/
+│   ├── vision.md
+│   └── experiments.md
+│
+├── packages/
+│   ├── core/
+│   │   └── shared knowledge primitives
+│   │
+│   ├── ingestion/
+│   │   └── repository/code ingestion
+│   │
+│   ├── archaeologist/
+│   │   └── infer knowledge from repositories
+│   │
+│   ├── compiler/
+│   │   └── development activity → knowledge changes
+│   │
+│   └── planner/
+│       └── task → relevant knowledge context
+│
+└── examples/
+    └── small test repositories
+```
+
+This structure is illustrative. Prefer simple boundaries over framework-heavy architecture.
+
+# 23. First experiment
+
+Start with the Archaeologist.
+
+Do NOT attempt whole-repository omniscience.
+
+Pick one narrow question such as:
+
+```text
+Infer error-handling conventions from this repository.
+```
+
+or:
+
+```text
+Infer architectural dependency rules.
+```
+
+Produce candidate knowledge with evidence.
+
+Example:
+
+```json
+{
+  "statement": "Domain modules do not depend on infrastructure",
+  "kind": "constraint",
+  "scope": "backend/domain",
+  "confidence": 0.91,
+  "status": "observation",
+  "evidence": [...]
+}
+```
+
+Then manually evaluate:
+
+1. Is the inferred knowledge correct?
+2. Is it useful to a fresh coding agent?
+3. Did it confuse implementation coincidence with deliberate convention?
+4. What information was missing?
+5. What representation would have made the result better?
+
+Use failures to evolve the knowledge model.
+
+# 24. Second experiment
+
+Feed the Decision Compiler real human/agent development interactions.
+
+Ask:
+
+```text
+What did the human teach the system during this session
+that was not previously represented?
+```
+
+Compare its candidate knowledge against human judgment.
+
+Especially test:
+
+- local correction vs global convention;
+- duplicate knowledge;
+- conflicting knowledge;
+- exceptions;
+- superseding decisions;
+- temporary implementation instructions vs durable knowledge.
+
+# 25. Third experiment
+
+Give the Planner:
+
+```text
+task
++
+knowledge recovered by Archaeologist
+```
+
+and compare the resulting plan/context against a fresh coding agent operating directly on the repository.
+
+The hypothesis:
+
+> Explicitly resolved software knowledge should reduce repeated archaeology, inconsistent implementation choices, and unnecessary human corrections.
+
+# 26. Explicitly parked
+
+Do NOT focus on these yet:
+
+- verification platform;
+- CI product;
+- automatic regeneration;
+- full IDE;
+- SaaS control plane;
+- formal specification;
+- deterministic code generation;
+- elaborate knowledge ontology;
+- Jira/Confluence integrations.
+
+They are downstream possibilities.
+
+Verification may eventually answer:
+
+> Does the realization still conform to accumulated knowledge?
+
+Regeneration may eventually provide the strongest test:
+
+> Can implementation be recreated while preserving the software knowledge humans care about?
+
+But neither is required to validate the foundational idea.
+
+# 27. Design philosophy
+
+Avoid both extremes.
+
+### Extreme A: Code remains the only truth
+
+Agents repeatedly reconstruct intent, architecture, conventions, and history from implementation.
+
+Knowledge is repeatedly lost.
+
+### Extreme B: Fully specified model-driven development
+
+Humans describe the complete system in a DSL and deterministically generate code.
+
+This recreates many limitations of traditional low-code/model-driven development.
+
+Lore instead explores:
+
+> Human-maintained knowledge is intentionally incomplete but sufficiently rich to constrain AI realization.
+
+AI supplies general software-engineering knowledge.
+
+Humans preserve the knowledge specific to **this system**.
+
+# 28. North-star question
+
+For any piece of information encountered during development, ask:
+
+> If we deleted and regenerated the implementation, would we want this information to survive?
+
+If yes, it is a candidate for the software knowledge layer.
+
+# 29. Long-term vision
+
+The eventual development loop could become:
+
+```text
+                 HUMAN + TEAM
+                      │
+                      ▼
+                SOFTWARE KNOWLEDGE
+                      │
+          ┌───────────┴───────────┐
+          ▼                       ▼
+      AI planning             AI realization
+          │                       │
+          └───────────┬───────────┘
+                      ▼
+                    CODE
+                      │
+                      ▼
+                  FEEDBACK
+                      │
+                      ▼
+              KNOWLEDGE DISTILLATION
+                      │
+                      └──────────────↺
+```
+
+The goal is not to maximize how much code AI generates.
+
+The goal is:
+
+> **Maximize how much software complexity a team can responsibly govern while retaining the knowledge and reasoning embodied by the system.**
+
+---
+
+# 30. Build Lore with Lore
+
+Lore should become its own first test repository. Before the CLI exists, manually seed `.lore/knowledge/` from the project handover and explicit human decisions.
+
+The initial files capture vision, architecture, principles, and experiments. Use them when developing Lore. Capture human corrections as candidate knowledge, review scope and rationale, and record accepted changes. A local implementation fix must not silently become a universal rule.
+
+As the tools mature:
+
+1. The Planner resolves relevant knowledge before a change.
+2. A coding agent implements the change.
+3. The Decision Compiler proposes knowledge learned during development.
+4. Human review accepts, rejects, or refines those proposals.
+5. The Archaeologist compares repository evidence with explicit knowledge.
+
+Drift analysis is a future experiment, not a requirement to build a verification platform now. When code and knowledge disagree, investigate whether the code drifted, an exception is missing, or the knowledge is stale.
+
+Compare fresh agents working with and without Lore's resolved context. Measure repeated corrections, unsupported architectural choices, time to acceptable implementation, and context usage. Treat improvement as a hypothesis to test.
+
+# 31. Bootstrap inference constraint
+
+The maintainer will begin in the Codex UI and has substantially more ChatGPT Pro usage available than API usage. Preserve BYOK as the standalone product direction while making initial experiments practical in that environment.
+
+The implemented bootstrap separates deterministic evidence preparation and result validation from model execution. A human or coding agent can read Lore's request, reason in an existing session, and return structured candidate knowledge. Lore owns the evidence, request format, provenance, and validation; it need not launch or depend on that agent.
+
+The optional BYOK adapter uses the same validation and import boundary. See the [bootstrap CLI design](docs/superpowers/specs/2026-10-01-bootstrap-cli-design.md).
+
+An official Sign in with ChatGPT path also supports eligible plan-funded requests in open-source applications. This is a possible future adapter, subject to eligibility and integration testing, rather than an assumption that ordinary API-key requests use subscription allowance. [Official integration overview](https://developers.openai.com/siwc/quickstart).
