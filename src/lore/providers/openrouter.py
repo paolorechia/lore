@@ -5,6 +5,8 @@ import httpx
 
 from lore.providers import ProviderError
 
+TIMEOUT = 60
+MAX_TOKENS = 8192
 
 class OpenRouterProvider:
     def __init__(self, model: str):
@@ -15,14 +17,14 @@ class OpenRouterProvider:
         if not api_key:
             raise ProviderError("Set OPENROUTER_API_KEY in your environment before calling OpenRouter.")
         try:
-            with httpx.Client(timeout=60) as client:
+            with httpx.Client(timeout=TIMEOUT) as client:
                 response = client.post(
                     "https://openrouter.ai/api/v1/chat/completions",
                     headers={"Authorization": f"Bearer {api_key}"},
                     json={
                         "model": self.model,
                         "messages": [{"role": "user", "content": prompt}],
-                        "max_tokens": 1024,
+                        "max_tokens": MAX_TOKENS,
                         "stream": False,
                     },
                 )

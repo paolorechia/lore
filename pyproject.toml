@@ -7,7 +7,12 @@ name = "lore-knowledge"
 version = "0.1.0"
 description = "A small learning project for extracting engineering decisions."
 requires-python = ">=3.11"
-dependencies = ["google-genai>=2.27,<3", "httpx>=0.28,<1", "pydantic>=2,<3"]
+dependencies = [
+    "google-genai>=2.27,<3",
+    "httpx>=0.28,<1",
+    "pydantic>=2,<3",
+    "pytest>=9.1.1",
+]
 
 [project.scripts]
 lore = "lore.cli:main"
